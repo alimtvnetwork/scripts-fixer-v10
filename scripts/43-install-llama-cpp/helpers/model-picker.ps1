@@ -515,6 +515,16 @@ function Install-SelectedModels {
     $skippedCount    = 0
     $failedCount     = 0
 
+    # Progress tracking helpers (spec: per-model download progress indicator)
+    function Format-Bar {
+        param([int]$Done, [int]$Total, [int]$Width = 20)
+        if ($Total -le 0) { return ("[" + (" " * $Width) + "]") }
+        $ratio = [math]::Min(1.0, [double]$Done / [double]$Total)
+        $filled = [int][math]::Round($ratio * $Width)
+        $empty  = $Width - $filled
+        return ("[" + ("#" * $filled) + ("-" * $empty) + "]")
+    }
+
     # -- Pass 1: classify each selection (skip / pending) ----------------------
     $pending = @()
     foreach ($model in $selectedModels) {
@@ -551,6 +561,13 @@ function Install-SelectedModels {
         Write-Log "Models directory: $ModelsDir" -Level "info"
         return
     }
+
+    # Pending size totals for the progress indicator
+    $pendingTotalGB = 0.0
+    foreach ($p in $pending) { $pendingTotalGB += [double]$p.Model.fileSizeGB }
+    $processedGB = 0.0
+    Write-Host ""
+    Write-Log ("Pending downloads: $pendingCount file(s), $([math]::Round($pendingTotalGB,1)) GB total") -Level "info"
 
     # -- Pass 2: optional batch (parallel) attempt ------------------------------
     $batchSuccessKeys = New-Object System.Collections.Generic.HashSet[string]
