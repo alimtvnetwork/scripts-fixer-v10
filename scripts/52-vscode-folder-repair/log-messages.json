@@ -50,17 +50,27 @@
   },
   "help": {
     "commands": {
-      "(default)": "Repair VS Code context menu so it appears ONLY on folders, then restart Explorer",
-      "no-restart": "Do the repair but do NOT restart explorer.exe",
-      "rollback":   "Restore the DEFAULT VS Code installer entries on all three targets (file, directory, background). Inverse of the folder-only repair."
+      "repair":     "(default) Folder-only repair + restart Explorer",
+      "dry-run":    "Preview repair (no registry writes, no snapshots)",
+      "no-restart": "Repair but do NOT restart explorer.exe",
+      "trace":      "Repair with -VerboseRegistry registry trace",
+      "verify":     "Verify final state without changing anything (dry-run + trace)",
+      "restore":    "Re-import newest BEFORE snapshot for the chosen edition",
+      "rollback":   "Restore DEFAULT installer entries on all 3 targets (inverse of repair)",
+      "help":       "Show this help"
     },
     "examples": [
-      ".\\run.ps1",
-      ".\\run.ps1 no-restart",
-      ".\\run.ps1 -Help",
-      ".\\rollback.ps1",
-      ".\\rollback.ps1 no-restart",
-      ".\\rollback.ps1 -Edition stable"
+      ".\\run.ps1                                            # default repair",
+      ".\\run.ps1 dry-run                                    # preview only",
+      ".\\run.ps1 repair -Edition stable -RequireSignature   # signed exe check",
+      ".\\run.ps1 repair -NonInteractive                     # CI / unattended",
+      ".\\run.ps1 trace                                      # verbose registry trace",
+      ".\\run.ps1 verify                                     # dry-run + trace, no writes",
+      ".\\run.ps1 no-restart -Edition insiders -SnapshotDir 'D:\\snaps\\vscode-menu'",
+      ".\\run.ps1 restore                                    # undo via newest BEFORE snapshot",
+      ".\\run.ps1 restore -Edition insiders -RestoreFromFile 'D:\\snaps\\vscode-menu-insiders-BEFORE-20260422-143012.reg'",
+      ".\\run.ps1 rollback                                   # restore default installer entries",
+      ".\\run.ps1 help"
     ]
   }
 }
