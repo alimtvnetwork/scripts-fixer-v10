@@ -10,7 +10,13 @@ param(
     [Parameter(Position = 1)]
     [string]$Path,
 
-    [switch]$Help
+    [switch]$Help,
+
+    [switch]$CheckUpdates,
+
+    [switch]$Apply,
+
+    [string]$Family = ""
 )
 
 Set-StrictMode -Version Latest
@@ -34,6 +40,7 @@ $sharedDir = Join-Path (Split-Path -Parent $scriptDir) "shared"
 # -- Dot-source script helpers ------------------------------------------------
 . (Join-Path $scriptDir "helpers\llama-cpp.ps1")
 . (Join-Path $scriptDir "helpers\model-picker.ps1")
+. (Join-Path $scriptDir "helpers\catalog-update.ps1")
 
 # -- Load config & log messages -----------------------------------------------
 $config       = Import-JsonConfig (Join-Path $scriptDir "config.json")
@@ -43,6 +50,24 @@ $catalogPath  = Join-Path $scriptDir "models-catalog.json"
 # -- Help ---------------------------------------------------------------------
 if ($Help -or $Command -eq "--help") {
     Show-ScriptHelp -LogMessages $logMessages
+    return
+}
+
+# -- Catalog update mode (no admin / no install required) ---------------------
+$isCheckUpdatesMode = $CheckUpdates -or ($Command -ieq "check-updates") -or ($Command -ieq "--check-updates")
+if ($isCheckUpdatesMode) {
+    Write-Banner -Title $logMessages.scriptName
+    Initialize-Logging -ScriptName $logMessages.scriptName
+    try {
+        Invoke-CatalogUpdateCheck -CatalogPath $catalogPath -ScriptDir $scriptDir `
+            -FamilyFilter $Family -Apply:$Apply
+    } catch {
+        Write-Log "Catalog update check failed: $_" -Level "error"
+        Write-Log "Stack: $($_.ScriptStackTrace)" -Level "error"
+    } finally {
+        $hasAnyErrors = $script:_LogErrors.Count -gt 0
+        Save-LogFile -Status $(if ($hasAnyErrors) { "fail" } else { "ok" })
+    }
     return
 }
 
