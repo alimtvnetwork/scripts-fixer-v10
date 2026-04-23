@@ -673,6 +673,7 @@ function Invoke-ModelInstaller {
         [string]$DefaultModelsSubfolder = "llama-models",
 
         $Aria2Config,
+        $DownloadConfig,
         $LogMessages
     )
 
@@ -799,7 +800,8 @@ function Invoke-ModelInstaller {
 
     # -- Download selected models ----------------------------------------------
     Install-SelectedModels -Models $downloadModels -SelectedIndices $selectedIndices `
-        -ModelsDir $modelsDir -Aria2Config $Aria2Config -LogMessages $LogMessages
+        -ModelsDir $modelsDir -Aria2Config $Aria2Config -DownloadConfig $DownloadConfig `
+        -LogMessages $LogMessages
 
     return $modelsDir
 }

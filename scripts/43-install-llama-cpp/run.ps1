@@ -135,7 +135,8 @@ switch ($Command.ToLower()) {
         # Interactive model installer
         Invoke-ModelInstaller -CatalogPath $catalogPath -DevDir $devDir `
             -DefaultModelsSubfolder $config.modelsConfig.devDirSubfolder `
-            -Aria2Config $config.aria2c -LogMessages $logMessages
+            -Aria2Config $config.aria2c -DownloadConfig $config.download `
+            -LogMessages $logMessages
     }
     "executables" {
         Write-Log $logMessages.messages.urlFreshnessCheck -Level "info"
@@ -150,7 +151,8 @@ switch ($Command.ToLower()) {
     "models" {
         Invoke-ModelInstaller -CatalogPath $catalogPath -DevDir $devDir `
             -DefaultModelsSubfolder $config.modelsConfig.devDirSubfolder `
-            -Aria2Config $config.aria2c -LogMessages $logMessages
+            -Aria2Config $config.aria2c -DownloadConfig $config.download `
+            -LogMessages $logMessages
     }
     "uninstall" {
         Uninstall-LlamaCpp -Config $config -LogMessages $logMessages -BaseDir $baseDir
