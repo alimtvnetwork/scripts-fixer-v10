@@ -511,6 +511,22 @@ function Install-SelectedModels {
         if ($DownloadConfig.splitsPerFile)                  { $batchSplits         = [int]$DownloadConfig.splitsPerFile }
     }
 
+    # -- Preflight: verify aria2c availability + permissions --------------------
+    # Disables parallel mode automatically if aria2c is missing, unreadable,
+    # or fails a quick --version probe.
+    $preflight = Test-Aria2Preflight
+    if (-not $preflight.IsParallelOk) {
+        if ($isParallelEnabled) {
+            Write-Log ("[PREFLIGHT] Parallel mode auto-disabled: " + $preflight.Reason) -Level "warn"
+            Write-Log "[PREFLIGHT] Falling back to sequential downloads for this run." -Level "warn"
+        } else {
+            Write-Log ("[PREFLIGHT] aria2c check: " + $preflight.Reason) -Level "info"
+        }
+        $isParallelEnabled = $false
+    } else {
+        Write-Log ("[PREFLIGHT] aria2c OK -- " + $preflight.Reason) -Level "success"
+    }
+
     $downloadedCount = 0
     $skippedCount    = 0
     $failedCount     = 0
