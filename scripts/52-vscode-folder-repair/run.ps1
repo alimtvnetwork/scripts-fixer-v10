@@ -1,11 +1,38 @@
 # --------------------------------------------------------------------------
 #  Script 52 -- VS Code Folder-Only Context Menu Repair
-#  Removes file + background entries, keeps only the folder entry, then
-#  restarts explorer.exe so the menu refreshes immediately.
+#
+#  Single entry point. All operations are exposed as SUBCOMMANDS so callers
+#  never have to invoke manual-repair.ps1 / rollback.ps1 directly with long
+#  parameter lists. The dispatcher just forwards to the right helper.
+#
+#  Subcommands:
+#    repair         (default) Folder-only repair + Explorer restart
+#    dry-run        Preview repair (no registry writes, no snapshots)
+#    no-restart     Repair but do NOT restart explorer.exe
+#    verify         Verify final state without changing anything
+#    trace          Repair with -VerboseRegistry trace
+#    restore        Re-import the newest BEFORE snapshot (undo via snapshot)
+#    rollback       Restore default installer entries on all 3 targets
+#    help           Show usage + examples
+#
+#  Common options:
+#    -Edition stable|insiders   Target edition (auto-detected when omitted)
+#    -SnapshotDir <path>        Override snapshot folder
+#    -RequireSignature          Enforce Authenticode signer check
+#    -NonInteractive            Suppress prompts (CI mode)
+#    -RestoreFromFile <path>    Explicit .reg snapshot for `restore`
 # --------------------------------------------------------------------------
 param(
     [Parameter(Position = 0)]
-    [string]$Command = "all",
+    [string]$Command = "repair",
+
+    [ValidateSet('', 'stable', 'insiders')]
+    [string]$Edition = '',
+
+    [string]$SnapshotDir,
+    [string]$RestoreFromFile,
+    [switch]$RequireSignature,
+    [switch]$NonInteractive,
 
     [switch]$Help
 )
@@ -33,6 +60,60 @@ $logMessages = Import-JsonConfig (Join-Path $scriptDir "log-messages.json")
 if ($Help -or $Command -eq "--help") {
     Show-ScriptHelp -LogMessages $logMessages
     return
+}
+
+# --------------------------------------------------------------------------
+# Subcommand dispatcher
+#
+# All "manual" workflows that used to require calling manual-repair.ps1
+# directly with long parameter lists are now exposed as named subcommands
+# of run.ps1. The dispatcher forwards to the right helper and exits.
+# Anything not matched here falls through to the legacy folder-only
+# repair flow below (kept for backwards compatibility).
+# --------------------------------------------------------------------------
+function Invoke-ManualRepair {
+    param([hashtable]$Extra = @{})
+
+    $manual = Join-Path $scriptDir "manual-repair.ps1"
+    if (-not (Test-Path -LiteralPath $manual)) {
+        Write-Host "FATAL: manual-repair.ps1 not found at $manual" -ForegroundColor Red
+        exit 2
+    }
+
+    $args = @{}
+    if (-not [string]::IsNullOrWhiteSpace($Edition))         { $args['Edition']           = $Edition }
+    if (-not [string]::IsNullOrWhiteSpace($SnapshotDir))     { $args['SnapshotDir']       = $SnapshotDir }
+    if (-not [string]::IsNullOrWhiteSpace($RestoreFromFile)) { $args['RestoreFromFile']   = $RestoreFromFile }
+    if ($RequireSignature)                                   { $args['RequireSignature']  = $true }
+    if ($NonInteractive)                                     { $args['NonInteractive']    = $true }
+    foreach ($k in $Extra.Keys) { $args[$k] = $Extra[$k] }
+
+    & $manual @args
+    exit $LASTEXITCODE
+}
+
+function Invoke-Rollback {
+    $rb = Join-Path $scriptDir "rollback.ps1"
+    if (-not (Test-Path -LiteralPath $rb)) {
+        Write-Host "FATAL: rollback.ps1 not found at $rb" -ForegroundColor Red
+        exit 2
+    }
+    $args = @{}
+    if (-not [string]::IsNullOrWhiteSpace($Edition)) { $args['Edition'] = $Edition }
+    & $rb @args
+    exit $LASTEXITCODE
+}
+
+switch ($Command.ToLower()) {
+    'help'       { Show-ScriptHelp -LogMessages $logMessages; return }
+    'dry-run'    { Invoke-ManualRepair -Extra @{ WhatIf = $true } }
+    'whatif'     { Invoke-ManualRepair -Extra @{ WhatIf = $true } }
+    'trace'      { Invoke-ManualRepair -Extra @{ VerboseRegistry = $true } }
+    'verify'     { Invoke-ManualRepair -Extra @{ WhatIf = $true; VerboseRegistry = $true } }
+    'restore'    { Invoke-ManualRepair -Extra @{ RestoreDefaultEntries = $true } }
+    'rollback'   { Invoke-Rollback }
+    'repair'     { Invoke-ManualRepair }
+    default      { } # 'all' / 'no-restart' / unknown -> fall through to legacy path
 }
 
 # -- Banner -------------------------------------------------------------------
