@@ -1,11 +1,38 @@
 # --------------------------------------------------------------------------
 #  Script 52 -- VS Code Folder-Only Context Menu Repair
-#  Removes file + background entries, keeps only the folder entry, then
-#  restarts explorer.exe so the menu refreshes immediately.
+#
+#  Single entry point. All operations are exposed as SUBCOMMANDS so callers
+#  never have to invoke manual-repair.ps1 / rollback.ps1 directly with long
+#  parameter lists. The dispatcher just forwards to the right helper.
+#
+#  Subcommands:
+#    repair         (default) Folder-only repair + Explorer restart
+#    dry-run        Preview repair (no registry writes, no snapshots)
+#    no-restart     Repair but do NOT restart explorer.exe
+#    verify         Verify final state without changing anything
+#    trace          Repair with -VerboseRegistry trace
+#    restore        Re-import the newest BEFORE snapshot (undo via snapshot)
+#    rollback       Restore default installer entries on all 3 targets
+#    help           Show usage + examples
+#
+#  Common options:
+#    -Edition stable|insiders   Target edition (auto-detected when omitted)
+#    -SnapshotDir <path>        Override snapshot folder
+#    -RequireSignature          Enforce Authenticode signer check
+#    -NonInteractive            Suppress prompts (CI mode)
+#    -RestoreFromFile <path>    Explicit .reg snapshot for `restore`
 # --------------------------------------------------------------------------
 param(
     [Parameter(Position = 0)]
-    [string]$Command = "all",
+    [string]$Command = "repair",
+
+    [ValidateSet('', 'stable', 'insiders')]
+    [string]$Edition = '',
+
+    [string]$SnapshotDir,
+    [string]$RestoreFromFile,
+    [switch]$RequireSignature,
+    [switch]$NonInteractive,
 
     [switch]$Help
 )
