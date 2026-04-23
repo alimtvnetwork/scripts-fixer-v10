@@ -38,7 +38,7 @@ type: feature
 ## Pending Suggestions
 
 ### High Priority
-- [~] Model catalog auto-update -- spec written (`spec/2025-batch/suggestions/01-catalog-auto-update.md`); PowerShell helper pending
+- [x] Model catalog auto-update -- helper shipped at `scripts/43-install-llama-cpp/helpers/catalog-update.ps1` (spec `spec/2025-batch/suggestions/01-catalog-auto-update.md`); invoke via `.\run.ps1 -CheckUpdates [-Family Qwen] [-Apply]` (v0.76.0)
 - [~] SHA256 checksums in catalog -- verification logic shipped; spec for population helper at `spec/2025-batch/suggestions/02-sha256-population.md`; data fill pending
 - [~] Parallel model downloads (aria2c batch) -- spec written (`spec/2025-batch/suggestions/03-parallel-downloads.md`); implementation pending
 
