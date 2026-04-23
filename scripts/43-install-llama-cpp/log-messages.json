@@ -39,14 +39,18 @@
       "all": "Download all executables + interactive model picker (default)",
       "executables": "Download and extract executables only",
       "models": "Interactive model picker -- choose which GGUF/GGML models to download",
-      "uninstall": "Remove all binaries, clean PATH, purge tracking"
+      "uninstall": "Remove all binaries, clean PATH, purge tracking",
+      "check-updates": "Scan Hugging Face for new GGUF releases of catalog families and write proposal JSON (no merge unless --Apply)"
     },
     "examples": [
       ".\\run.ps1",
       ".\\run.ps1 executables",
       ".\\run.ps1 models",
       ".\\run.ps1 -Help",
-      ".\\run.ps1 uninstall"
+      ".\\run.ps1 uninstall",
+      ".\\run.ps1 -CheckUpdates",
+      ".\\run.ps1 -CheckUpdates -Family Qwen",
+      ".\\run.ps1 -CheckUpdates -Apply"
     ]
   }
 }
