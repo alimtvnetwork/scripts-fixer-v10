@@ -479,33 +479,48 @@ Console:
 > back to direct download per the open question in
 > [`spec/2025-batch/03-whatsapp.md`](spec/2025-batch/03-whatsapp.md).
 
-#### ✅ Success — `.\run.ps1 -I 50` (OneNote + OneDrive autostart off)
+#### ✅ Success — `.\run.ps1 install onenote` (OneNote-only — default)
 
 Console:
 ```text
+[Install OneNote] 14:25:11  INFO  OneNote mode: install-only (no tweaks, OneDrive untouched)
 [Install OneNote] 14:25:11  INFO  Strategy: choco first, direct-download fallback
 [Install OneNote] 14:25:12  INFO  choco install onenote -y ...
 [Install OneNote] 14:26:02  OK    choco exit 0 — ONENOTE.EXE found
-[Install OneNote] 14:26:02  INFO  Disabling OneDrive autostart (HKCU\...\Run\OneDrive)
-[Install OneNote] 14:26:02  OK    Removed Run-key value 'OneDrive'
 [Install OneNote] 14:26:03  DONE  Status: ok  (duration: 52.0s)
         log → .resolved\logs\50-install-onenote-20260422-142511.json
 ```
+
+To **also** disable OneDrive autostart and remove the OneNote tray icon,
+use the explicit combo keyword instead — see
+[OneNote install variants](#onenote-install-variants) below.
 
 `.resolved/logs/50-install-onenote-20260422-142511.json`:
 ```json
 {
   "scriptId": 50,
   "status": "ok",
+  "mode": "install-only",
   "installStrategy": "choco",
   "verifiedPath": "C:\\Program Files\\Microsoft Office\\root\\Office16\\ONENOTE.EXE",
-  "tweaks": {
-    "onedriveAutostart": { "before": "C:\\...\\OneDrive.exe /background", "after": null, "ok": true }
-  }
+  "tweaks": { "removeTrayIcon": false, "disableOneDrive": false }
 }
 ```
 
-#### ❌ Failure — `.\run.ps1 -I 50` (HKCU registry write blocked)
+#### ✅ Success — `.\run.ps1 install onenote+rm-onedrive` (combo)
+
+Console:
+```text
+[Install OneNote] 14:28:00  INFO  OneNote mode: install + rm-onedrive (tray + OneDrive autostart disabled)
+[Install OneNote] 14:28:01  OK    choco install onenote -y → exit 0
+[Install OneNote] 14:28:02  INFO  Removing OneNote tray icon (ONENOTEM.EXE)...
+[Install OneNote] 14:28:02  OK    OneNote tray helper killed + Run-key removed
+[Install OneNote] 14:28:02  INFO  Disabling OneDrive (process kill + scheduled tasks + autostart)
+[Install OneNote] 14:28:03  OK    Removed OneDrive autostart entry from HKCU Run key
+[Install OneNote] 14:28:03  DONE  Status: ok  (duration: 53.7s)
+```
+
+#### ❌ Failure — `.\run.ps1 install onenote+rm-onedrive` (HKCU registry write blocked)
 
 Console:
 ```text
