@@ -618,14 +618,14 @@ Override the dev drive globally before running any profile:
 
 ---
 
-## 🤖 Local AI Models — 91 GGUFs + Ollama
+## 🤖 Local AI Models — 90 GGUFs + Ollama
 
 Two backends, one orchestrator. Install local LLMs without juggling
 Hugging Face URLs, RAM math, or quantization codes.
 
 | Backend | Catalog | What it does | Entry point |
 |---|---|---|---|
-| **llama.cpp** | [`models-list.md`](scripts/43-install-llama-cpp/models-list.md) — **91 GGUF models, 33 families** | Hardware-aware picker. 4-filter chain (RAM → Size → Speed → Capability). Direct GGUF download + verify. | `.\run.ps1 install llama-cpp` |
+| **llama.cpp** | [`models-list.md`](scripts/43-install-llama-cpp/models-list.md) — **90 GGUF models, 33 families** | Hardware-aware picker. 4-filter chain (RAM → Size → Speed → Capability). Direct GGUF download + verify. | `.\run.ps1 install llama-cpp` |
 | **Ollama** | [`config.json`](scripts/42-install-ollama/config.json) — daemon-managed pulls | Daemon-based pull/push. Slug install (`llama3.2`, `qwen2.5-coder`, `deepseek-r1:8b`). Auto-detects existing models on uninstall. | `.\run.ps1 install ollama` |
 
 The catalog includes the **open-weight portion of the OpenRouter LLM
@@ -660,7 +660,7 @@ because they cannot be downloaded as GGUF files.
 
 ### What's in the catalog
 
-- **91 models** across **33 families** (Qwen, Llama, Gemma, Phi, DeepSeek,
+- **90 models** across **33 families** (Qwen, Llama, Gemma, Phi, DeepSeek,
   Mistral, Granite, Codestral, StarCoder, CodeLlama, Whisper, Nemotron,
   GLM, MiniMax, Kimi, gpt-oss, MiMo, Step, …)
 - **Capabilities tracked per model**: `isCoding`, `isReasoning`,
