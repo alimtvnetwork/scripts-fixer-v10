@@ -110,6 +110,52 @@ function Invoke-Rollback {
     exit $LASTEXITCODE
 }
 
+function Show-RefreshHelp {
+    param([PSObject]$LogMsgs)
+
+    $hasBlock = $LogMsgs.help.PSObject.Properties.Name -contains 'refresh'
+    if (-not $hasBlock) {
+        Write-Host "ERROR: refresh help block missing from log-messages.json (key: help.refresh)" -ForegroundColor Red
+        return
+    }
+    $r = $LogMsgs.help.refresh
+
+    Write-Host ""
+    Write-Host $r.title   -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host $r.summary -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "USAGE" -ForegroundColor Yellow
+    Write-Host ("  " + $r.usage) -ForegroundColor White
+    Write-Host ""
+    Write-Host "STEPS (each is independent and controlled by its own flag)" -ForegroundColor Yellow
+    foreach ($s in $r.steps) {
+        Write-Host ""
+        Write-Host ("  " + $s.name) -ForegroundColor Green
+        Write-Host ("    What:         " + $s.what)         -ForegroundColor Gray
+        Write-Host ("    When to use:  " + $s.when)         -ForegroundColor Gray
+        Write-Host ("    Enabled by:   " + $s.enabledBy)    -ForegroundColor White
+        Write-Host ("    Side effects: " + $s.sideEffects)  -ForegroundColor DarkGray
+    }
+    Write-Host ""
+    Write-Host "FLAGS" -ForegroundColor Yellow
+    foreach ($f in $r.flags) {
+        $label = "{0,-22}" -f $f.flag
+        Write-Host ("  " + $label + "  " + $f.effect) -ForegroundColor Gray
+    }
+    Write-Host ""
+    Write-Host "RULES" -ForegroundColor Yellow
+    foreach ($rule in $r.rules) {
+        Write-Host ("  - " + $rule) -ForegroundColor Gray
+    }
+    Write-Host ""
+    Write-Host "EXAMPLES" -ForegroundColor Yellow
+    foreach ($ex in $r.examples) {
+        Write-Host ("  " + $ex) -ForegroundColor DarkGray
+    }
+    Write-Host ""
+}
+
 switch ($Command.ToLower()) {
     'help'       { Show-ScriptHelp -LogMessages $logMessages; return }
     'dry-run'    { Invoke-ManualRepair -Extra @{ WhatIf = $true } }
@@ -123,6 +169,17 @@ switch ($Command.ToLower()) {
         if ($ok) { exit 0 } else { exit 1 }
     }
     'refresh'    {
+        # Per-subcommand help: '.\run.ps1 refresh --help' / '-help' / 'help'
+        $isRefreshHelp = $false
+        if ($Help) { $isRefreshHelp = $true }
+        if ($null -ne $Rest -and $Rest.Count -gt 0) {
+            foreach ($a in $Rest) {
+                $low = "$a".Trim().ToLower()
+                if ($low -in @('--help','-help','-h','/?','help','?')) { $isRefreshHelp = $true }
+            }
+        }
+        if ($isRefreshHelp) { Show-RefreshHelp -LogMsgs $logMessages; exit 0 }
+
         # Minimum-components shell refresh.
         # Flags (parsed from $Rest):
         #   --assoc-only      Only SHChangeNotify(SHCNE_ASSOCCHANGED)
