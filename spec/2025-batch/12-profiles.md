@@ -50,11 +50,17 @@ plus a usable right-click menu on Win11.
 | 5 | Apply default git config (see "Default git config" below) |
 
 ### 3. Advance Setup (`profile advance`)
-- Includes everything from `profile base` + `profile git-compact`
-- Additional: `choco install wordweb-free -y`, `choco install beyondcompare -y`
+Total = **23 steps**.
+
+Includes everything from `profile base` (12) + `profile git-compact` (5), then adds:
+- `choco install wordweb-free -y`
+- `choco install beyondcompare -y`
 - OBS + settings (script 36, `install+settings`)
 - WhatsApp (script 49)
 - VSCode + Settings (scripts 01 + 11)
+
+All current `advance` outputs land on **C:\ / %LOCALAPPDATA% / %APPDATA% / %USERPROFILE%**.
+It does **not** install dev runtimes into `E:\dev-tool\`.
 
 ### 4. C++ + DirectX (`profile cpp-dx`)
 - `choco install vcredist-all -y`
@@ -63,12 +69,16 @@ plus a usable right-click menu on Win11.
 - All OS-dir.
 
 ### 5. Small Dev (`profile small-dev`)
+Total = **27 steps**.
+
 - Includes everything from `profile advance`
 - Adds:
   - Golang (script 06) -- default dir
   - Python (script 05) -- default dir
   - NodeJS (script 03) -- default dir
   - pnpm (script 04) -- default dir
+
+Only these last 4 runtime steps land in `E:\dev-tool\` (or the current custom dev-dir).
 
 ## Default git config (applied during git-compact)
 

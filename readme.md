@@ -12,7 +12,7 @@
 [![Tools Installed](https://img.shields.io/badge/Tools-46%2B-8b5cf6?logo=tools&logoColor=white)](#what-it-does)
 [![Databases](https://img.shields.io/badge/Databases-12-0ea5e9?logo=databricks&logoColor=white)](#databases-18-29)
 [![License](https://img.shields.io/badge/License-MIT-eab308)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-v0.92.0-f97316)](scripts/version.json)
+[![Version](https://img.shields.io/badge/Version-v0.93.0-f97316)](scripts/version.json)
 [![Changelog](https://img.shields.io/badge/Changelog-Latest-ec4899)](changelog.md)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows)
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-22c55e)](https://github.com/alimtvnetwork/gitmap-v6)
@@ -136,9 +136,9 @@ IDs to remember, no order to figure out, no half-installed tools.
 | 🟢 [Minimal](#-profile-minimal) | `.\run.ps1 profile minimal -y` | 5 | 5 | Fresh Windows in 2 min |
 | 🔵 [Base](#-profile-base) | `.\run.ps1 profile base -y` | 12 | 12 | Daily-driver workstation |
 | 🟣 [Git-compact](#-profile-git-compact) | `.\run.ps1 profile git-compact -y` | 5 | 5 | Source-control box |
-| 🟠 [Advance](#-profile-advance) | `.\run.ps1 profile advance -y` | ~25 | ~25 | Full creator setup |
+| 🟠 [Advance](#-profile-advance) | `.\run.ps1 profile advance -y` | 23 | 23 | Full creator setup |
 | 🔴 [C++ + DirectX](#-profile-cpp--directx) | `.\run.ps1 profile cpp-dx -y` | 3 | 3 | Game / native dev |
-| 🟡 [Small Dev](#-profile-small-dev) | `.\run.ps1 profile small-dev -y` | ~29 | ~29 | Polyglot dev box |
+| 🟡 [Small Dev](#-profile-small-dev) | `.\run.ps1 profile small-dev -y` | 27 | 27 | Polyglot dev box |
 
 Source of truth: [`scripts/profile/config.json`](scripts/profile/config.json) ·
 spec: [`spec/2025-batch/12-profiles.md`](spec/2025-batch/12-profiles.md).
@@ -169,6 +169,17 @@ spec: [`spec/2025-batch/12-profiles.md`](spec/2025-batch/12-profiles.md).
 .\run.ps1 install profile-cpp-dx
 .\run.ps1 install profile-small-dev
 ```
+
+### Profile totals by destination
+
+| Profile | Total steps | C:\ installs / writes | E:\dev-tool installs | User-profile writes | Registry / system changes |
+|---------|:-----------:|------------------------|-----------------------|---------------------|---------------------------|
+| `minimal` | 5 | Chocolatey, Git, 7-Zip, Chrome | — | — | Win11 classic context menu shim |
+| `base` | 12 | Chocolatey, Git, VLC, 7-Zip, WinRAR, fonts, XMind, Notepad++, Chrome, ConEmu, PSReadLine | — | `%APPDATA%\Notepad++`, `%APPDATA%\ConEmu.xml`, `%USERPROFILE%\Documents\WindowsPowerShell\Modules\PSReadLine\` | Hibernation off |
+| `git-compact` | 5 | Git | — | `%LOCALAPPDATA%\GitHubDesktop`, `%USERPROFILE%\.ssh`, `%USERPROFILE%\.gitconfig`, `%USERPROFILE%\GitHub\` | — |
+| `advance` | 23 | Everything in `base` + WordWeb, Beyond Compare, OBS | — | Everything in `git-compact` + `%LOCALAPPDATA%\WhatsApp`, `%LOCALAPPDATA%\Programs\Microsoft VS Code`, `%APPDATA%\Code\User`, `%APPDATA%\obs-studio\` | Inherits `base` system changes |
+| `cpp-dx` | 3 | VC++ runtimes, DirectX runtime, DirectX SDK | — | — | System runtime DLL registration |
+| `small-dev` | 27 | Everything in `advance` | Go, Python, Node.js, pnpm | Inherits `advance` | Inherits `advance` system changes |
 
 ---
 
@@ -239,8 +250,15 @@ hibernation disabled to free `C:\hiberfil.sys`. Includes everything in
 > ℹ️ **No E:\dev-tool entries here.** `base` is purely OS hygiene + GUI
 > apps. Dev runtimes (Node, Python, Go, pnpm) come in via `small-dev`.
 
+**Total outcome after this profile finishes:**
+
+- **12 steps applied**
+- **C:\ only** for apps, fonts, and synced settings
+- **0 tools on E:\dev-tool**
+- **System tweaks included:** hibernation off, PSReadLine updated
+
 <p align="center">
-  <img src="assets/demos/run-profile-advance.svg" alt="Demo: profile advance (which includes base) — full developer profile" width="100%"/>
+  <img src="assets/demos/run-profile-base.svg" alt="Demo: profile base — daily-driver Windows workstation profile" width="100%"/>
 </p>
 
 ---
@@ -283,7 +301,7 @@ hibernation disabled to free `C:\hiberfil.sys`. Includes everything in
 
 **Full creator + developer setup.** `base` + `git-compact` + WordWeb +
 Beyond Compare + OBS (with synced settings) + WhatsApp Desktop + VS Code
-+ VS Code settings sync. About 25 tools end-to-end.
++ VS Code settings sync. **23 steps end-to-end.**
 
 **Copy-paste one-liner:**
 
@@ -291,18 +309,35 @@ Beyond Compare + OBS (with synced settings) + WhatsApp Desktop + VS Code
 .\run.ps1 profile advance -y
 ```
 
-**What gets installed and where (extras only — see `base` + `git-compact` for the rest):**
+**What gets installed and where (full total):**
 
 | # | Tool | Source | Install location | Drive |
 |:-:|------|--------|------------------|:-----:|
-| — | All of `profile base` (12 steps) | recursive | _see above_ | C:\ |
-| — | All of `profile git-compact` (5 steps) | recursive | _see above_ | C:\ |
-| 18 | WordWeb dictionary | choco `wordweb-free` | `C:\Program Files (x86)\WordWeb\` | C:\ |
-| 19 | Beyond Compare | choco `beyondcompare` | `C:\Program Files\Beyond Compare 4\` | C:\ |
-| 20 | OBS Studio + settings | script #36 (`install+settings`) | `C:\Program Files\obs-studio\` + `%APPDATA%\obs-studio\` | C:\ |
-| 21 | WhatsApp Desktop | script #49 (choco) | `%LOCALAPPDATA%\WhatsApp\` | C:\ |
-| 22 | Visual Studio Code | script #01 | `%LOCALAPPDATA%\Programs\Microsoft VS Code\` | C:\ |
-| 23 | VS Code settings sync | script #11 | `%APPDATA%\Code\User\` + extensions | C:\ |
+| 1 | Chocolatey package manager | bootstrap | `C:\ProgramData\chocolatey\` | C:\ |
+| 2 | Git + Git LFS + gh | script #07 (choco) | `C:\Program Files\Git\` | C:\ |
+| 3 | VLC media player | choco `vlc` | `C:\Program Files\VideoLAN\VLC\` | C:\ |
+| 4 | 7-Zip archiver | choco `7zip.install` | `C:\Program Files\7-Zip\` | C:\ |
+| 5 | WinRAR | choco `winrar` | `C:\Program Files\WinRAR\` | C:\ |
+| 6 | Ubuntu font family | script #47 | `C:\Windows\Fonts\` | C:\ |
+| 7 | XMind | choco `xmind` | `C:\Program Files (x86)\XMind\` | C:\ |
+| 8 | Notepad++ + settings | script #33 (`install+settings`) | `C:\Program Files\Notepad++\` + `%APPDATA%\Notepad++\` | C:\ |
+| 9 | Google Chrome | choco `googlechrome` | `C:\Program Files\Google\Chrome\` | C:\ |
+| 10 | ConEmu + settings | script #48 (`install+settings`) | `C:\Program Files\ConEmu\` + `%APPDATA%\ConEmu.xml` | C:\ |
+| 11 | Disable hibernation | subcommand `os hib-off` | `powercfg /hibernate off` | C:\ |
+| 12 | PSReadLine (latest) | inline | `%USERPROFILE%\Documents\WindowsPowerShell\Modules\PSReadLine\` | C:\ |
+| 13 | GitHub Desktop | script #08 (per-user installer) | `%LOCALAPPDATA%\GitHubDesktop\` | C:\ |
+| 14 | SSH key (ed25519) | inline `Setup-SshKey` | `%USERPROFILE%\.ssh\id_ed25519` | C:\ |
+| 15 | Default GitHub dir | inline `Setup-GitHubDir` | `%USERPROFILE%\GitHub\` | C:\ |
+| 16 | Default `.gitconfig` | inline `Apply-DefaultGitConfig` | `%USERPROFILE%\.gitconfig` | C:\ |
+| 17 | WordWeb dictionary | choco `wordweb-free` | `C:\Program Files (x86)\WordWeb\` | C:\ |
+| 18 | Beyond Compare | choco `beyondcompare` | `C:\Program Files\Beyond Compare 4\` | C:\ |
+| 19 | OBS Studio + settings | script #36 (`install+settings`) | `C:\Program Files\obs-studio\` + `%APPDATA%\obs-studio\` | C:\ |
+| 20 | WhatsApp Desktop | script #49 | `%LOCALAPPDATA%\WhatsApp\` | C:\ |
+| 21 | Visual Studio Code | script #01 | `%LOCALAPPDATA%\Programs\Microsoft VS Code\` | C:\ |
+| 22 | VS Code settings sync | script #11 | `%APPDATA%\Code\User\` + extensions | C:\ |
+> ✅ **Exact total:** `advance` currently applies **23 steps**, all on **C:\ / user profile paths**. It does **not** place anything in `E:\dev-tool\`.
+
+> ℹ️ **About the classic right-click fix:** that Win11 registry tweak is part of `profile minimal`, not `base` / `advance`. If you want it too, run `profile minimal` first or expose it as a standalone helper later.
 
 <p align="center">
   <img src="assets/demos/run-profile-advance.svg" alt="Demo: profile advance — full developer profile" width="100%"/>
@@ -330,6 +365,17 @@ all system-drive.
 | 2 | DirectX runtime | choco `directx` | `C:\Windows\System32\` (DX DLLs) | C:\ |
 | 3 | DirectX SDK | choco `directx-sdk` | `C:\Program Files (x86)\Microsoft DirectX SDK\` | C:\ |
 
+**Total outcome after this profile finishes:**
+
+- **3 steps applied**
+- **All files land on C:\ / system runtime folders**
+- **0 tools on E:\dev-tool**
+- Best when you need native game/runtime prerequisites without the rest of the workstation stack
+
+<p align="center">
+  <img src="assets/demos/run-profile-cpp-dx.svg" alt="Demo: profile cpp-dx — VC++ and DirectX runtime profile" width="100%"/>
+</p>
+
 ---
 
 ### 🟡 Profile: small-dev
@@ -345,20 +391,27 @@ stays on C:\.
 .\run.ps1 profile small-dev -y
 ```
 
-**What gets installed and where (extras only — see `advance` for the rest):**
+**What gets installed and where (full total summary):**
 
 | # | Tool | Source | Install location | Drive |
 |:-:|------|--------|------------------|:-----:|
-| — | All of `profile advance` (~25 steps) | recursive | _see above_ | C:\ |
-| 26 | Go (Golang) | script #06 | `E:\dev-tool\go\` (GOPATH + cache) | **E:\\** |
-| 27 | Python + pip | script #05 | `E:\dev-tool\python\` (incl. PYTHONUSERBASE) | **E:\\** |
-| 28 | Node.js + Yarn + Bun | script #03 | `E:\dev-tool\nodejs\` (npm global prefix) | **E:\\** |
-| 29 | pnpm | script #04 | `E:\dev-tool\pnpm\` (pnpm store) | **E:\\** |
+| 1-23 | All of `profile advance` | recursive | _see full table above_ | C:\ |
+| 24 | Go (Golang) | script #06 | `E:\dev-tool\go\` (GOPATH + cache) | **E:\\** |
+| 25 | Python + pip | script #05 | `E:\dev-tool\python\` (incl. PYTHONUSERBASE) | **E:\\** |
+| 26 | Node.js + Yarn + Bun | script #03 | `E:\dev-tool\nodejs\` (npm global prefix) | **E:\\** |
+| 27 | pnpm | script #04 | `E:\dev-tool\pnpm\` (pnpm store) | **E:\\** |
 
 > 🧠 **Why E: by default?** The dev-dir resolver picks the drive with
 > the most free space (preferring `E:` then `D:`). If you only have `C:`,
 > all four runtimes land in `C:\dev-tool\` instead. Override anytime:
 > `.\run.ps1 path F:\my-dev-tool` — then re-run the profile.
+
+**Total outcome after this profile finishes:**
+
+- **27 steps applied**
+- **23 steps land on C:\ / profile folders**
+- **4 runtime stacks land on E:\dev-tool\** by default
+- Best choice when you want one command that leaves both **apps on C:\** and **runtimes on E:\**
 
 <p align="center">
   <img src="assets/demos/run-profile-small-dev.svg" alt="Demo: profile small-dev — advance + Go/Python/Node/pnpm on E:\dev-tool" width="100%"/>

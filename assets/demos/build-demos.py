@@ -367,6 +367,64 @@ def demo_profile_small_dev() -> None:
     )
 
 
+def demo_profile_base() -> None:
+    lines: List[Line] = [
+        Line(prompt_segments(".\\run.ps1 profile base"), delay=0.4, typed=True),
+
+        Line([("", TEXT_FG)], delay=3.5),
+        Line([("==> Profile: base  (daily-driver Windows workstation)", ACCENT_HEADER)], delay=3.65),
+        Line([("    12 steps: media + browser + editor + terminal + XMind", DIM_FG)], delay=3.8),
+        Line([("", TEXT_FG)], delay=4.0),
+
+        Line([("[1/12] ", ACCENT_INFO), ("chocolatey ................. ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.2),
+        Line([("[2/12] ", ACCENT_INFO), ("git + lfs .................. ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.45),
+        Line([("[3/12] ", ACCENT_INFO), ("vlc ........................ ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.7),
+        Line([("[4/12] ", ACCENT_INFO), ("7-zip + winrar ............. ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.95),
+        Line([("[5/12] ", ACCENT_INFO), ("ubuntu font + xmind ........ ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.2),
+        Line([("[6/12] ", ACCENT_INFO), ("notepad++ + settings ....... ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.45),
+        Line([("[7/12] ", ACCENT_INFO), ("chrome + conemu ............ ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.7),
+        Line([("[8/12] ", ACCENT_INFO), ("hibernation off + psreadline ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.95),
+
+        Line([("", TEXT_FG)], delay=6.3),
+        Line([("Base workstation ready in ", DIM_FG), ("3m 41s", ACCENT_WARN), ("  -- all apps on C:\\.", DIM_FG)], delay=6.55),
+
+        Line(prompt_segments(""), delay=7.3, typed=False),
+    ]
+    build_svg(
+        title="run profile base  -  daily-driver Windows workstation",
+        lines=lines,
+        loop_seconds=10.0,
+        out_path=OUT_DIR / "run-profile-base.svg",
+    )
+
+
+def demo_profile_cpp_dx() -> None:
+    lines: List[Line] = [
+        Line(prompt_segments(".\\run.ps1 profile cpp-dx"), delay=0.4, typed=True),
+
+        Line([("", TEXT_FG)], delay=3.4),
+        Line([("==> Profile: cpp-dx  (native runtime prerequisites)", ACCENT_HEADER)], delay=3.55),
+        Line([("    3 steps: VC++ runtimes + DirectX runtime + DirectX SDK", DIM_FG)], delay=3.75),
+        Line([("", TEXT_FG)], delay=3.95),
+
+        Line([("[1/3] ", ACCENT_INFO), ("vcredist-all ............... ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.2),
+        Line([("[2/3] ", ACCENT_INFO), ("directx runtime ............ ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.55),
+        Line([("[3/3] ", ACCENT_INFO), ("directx sdk ................ ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.9),
+        Line([("       ", DIM_FG), ("system runtime DLLs + SDK headers ready", DIM_FG)], delay=5.15),
+
+        Line([("", TEXT_FG)], delay=5.5),
+        Line([("cpp-dx done in ", DIM_FG), ("2m 12s", ACCENT_WARN), ("  -- native stack ready on C:\\.", DIM_FG)], delay=5.75),
+
+        Line(prompt_segments(""), delay=6.55, typed=False),
+    ]
+    build_svg(
+        title="run profile cpp-dx  -  VC++ + DirectX prerequisites",
+        lines=lines,
+        loop_seconds=9.3,
+        out_path=OUT_DIR / "run-profile-cpp-dx.svg",
+    )
+
+
 # ---------------------------------------------------------------------------
 # Demo 1d: profile git-compact
 # ---------------------------------------------------------------------------
@@ -590,8 +648,10 @@ def main() -> None:  # noqa: F811 -- intentional override
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     demo_profile()
     demo_profile_minimal()
+    demo_profile_base()
     demo_profile_small_dev()
     demo_profile_git()
+    demo_profile_cpp_dx()
     demo_postgres()
     demo_os_clean()
     demo_os_clean_detailed()
