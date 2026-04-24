@@ -11,6 +11,12 @@ The root README and `spec/2025-batch/12-profiles.md` MUST present a
 
 | Tool | Where it lands | Why |
 
+They should also include a short **profile total summary** that states:
+- total step count
+- what lands on `C:\`
+- what lands on `E:\dev-tool\` (if anything)
+- whether registry / system tweaks are included
+
 ## Conventions
 
 - **C:\Program Files / C:\Program Files (x86)** -> all `choco` steps
