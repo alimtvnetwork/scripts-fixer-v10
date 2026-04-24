@@ -518,6 +518,8 @@ def main() -> None:
     demo_postgres()
     demo_os_clean()
     demo_os_clean_detailed()
+    demo_install_comma()
+    demo_classic_context()
 
 
 if __name__ == "__main__":
