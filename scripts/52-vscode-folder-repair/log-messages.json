@@ -80,7 +80,7 @@
       "verify":     "Verify final state without changing anything (dry-run + trace)",
       "restore":    "Re-import newest BEFORE snapshot for the chosen edition",
       "rollback":   "Restore DEFAULT installer entries on all 3 targets (inverse of repair)",
-        "refresh":    "Refresh shell with minimum components. Flags: --assoc-only | --broadcast-only | --both (default) | --restart. Prints exact API calls sent.",
+        "refresh":    "Lightweight shell refresh after a repair. Run '.\\run.ps1 refresh --help' for the full per-step / per-flag breakdown.",
       "verify-handlers": "Check whether VS Code context menu handlers are registered. Prints PASS/FAIL per target. Read-only.",
       "help":       "Show this help"
     },
