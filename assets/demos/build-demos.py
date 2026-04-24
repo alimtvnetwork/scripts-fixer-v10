@@ -639,6 +639,72 @@ def demo_classic_context() -> None:
     )
 
 
+# ---------------------------------------------------------------------------
+# Demo: profile dev (small-dev + Python/Node+yarn+bun/pnpm/Rust/PHP)
+# ---------------------------------------------------------------------------
+
+def demo_profile_dev() -> None:
+    lines: List[Line] = [
+        Line(prompt_segments(".\\run.ps1 profile dev"), delay=0.4, typed=True),
+
+        Line([("", TEXT_FG)], delay=3.2),
+        Line([("==> Profile: dev  (polyglot daily-driver)", ACCENT_HEADER)], delay=3.35),
+        Line([("    29 steps: small-dev (24) + Py + Node+Yarn+Bun + pnpm + Rust + PHP", DIM_FG)], delay=3.55),
+        Line([("", TEXT_FG)], delay=3.75),
+
+        Line([("[ 1-23 ] ", ACCENT_INFO), ("advance stack ..................... ", TEXT_FG), ("OK", ACCENT_OK)], delay=3.95),
+        Line([("[  24  ] ", ACCENT_INFO), ("golang        -> E:\\dev-tool\\go ... ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.3),
+        Line([("[  25  ] ", ACCENT_INFO), ("python + pip  -> E:\\dev-tool\\python ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.65),
+        Line([("[  26  ] ", ACCENT_INFO), ("node+yarn+bun -> E:\\dev-tool\\nodejs ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.0),
+        Line([("[  27  ] ", ACCENT_INFO), ("pnpm          -> E:\\dev-tool\\pnpm . ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.35),
+        Line([("[  28  ] ", ACCENT_INFO), ("rust (rustup) -> E:\\dev-tool\\rust . ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.7),
+        Line([("[  29  ] ", ACCENT_INFO), ("php cli       -> E:\\dev-tool\\php .. ", TEXT_FG), ("OK", ACCENT_OK)], delay=6.05),
+
+        Line([("", TEXT_FG)], delay=6.4),
+        Line([("dev box ready in ", DIM_FG), ("8m 12s", ACCENT_WARN), (" - 6 runtimes on E:\\, apps on C:\\.", DIM_FG)], delay=6.6),
+
+        Line(prompt_segments(""), delay=7.4, typed=False),
+    ]
+    build_svg(
+        title="run profile dev  -  polyglot daily-driver (Py/Node/pnpm/Rust/PHP + Go)",
+        lines=lines,
+        loop_seconds=10.5,
+        out_path=OUT_DIR / "run-profile-dev.svg",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Demo: profile dev-advance (dev + .NET + cpp-dx)
+# ---------------------------------------------------------------------------
+
+def demo_profile_dev_advance() -> None:
+    lines: List[Line] = [
+        Line(prompt_segments(".\\run.ps1 profile dev-advance"), delay=0.4, typed=True),
+
+        Line([("", TEXT_FG)], delay=3.6),
+        Line([("==> Profile: dev-advance  (everything-bagel box)", ACCENT_HEADER)], delay=3.75),
+        Line([("    33 steps: dev (29) + .NET SDK + cpp-dx (3)", DIM_FG)], delay=3.95),
+        Line([("", TEXT_FG)], delay=4.15),
+
+        Line([("[ 1-29 ] ", ACCENT_INFO), ("dev profile (Go/Py/Node/pnpm/Rust/PHP) ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.35),
+        Line([("[  30  ] ", ACCENT_INFO), (".NET SDK (C#) -> C:\\Program Files\\dotnet ", TEXT_FG), ("OK", ACCENT_OK)], delay=4.7),
+        Line([("[  31  ] ", ACCENT_INFO), ("vcredist-all  -> System32 runtime DLLs   ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.05),
+        Line([("[  32  ] ", ACCENT_INFO), ("directx       -> System32 DX runtime     ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.4),
+        Line([("[  33  ] ", ACCENT_INFO), ("directx sdk   -> Program Files (x86)     ", TEXT_FG), ("OK", ACCENT_OK)], delay=5.75),
+
+        Line([("", TEXT_FG)], delay=6.1),
+        Line([("dev-advance ready in ", DIM_FG), ("11m 04s", ACCENT_WARN), (" - polyglot + native + .NET, all on disk.", DIM_FG)], delay=6.3),
+
+        Line(prompt_segments(""), delay=7.1, typed=False),
+    ]
+    build_svg(
+        title="run profile dev-advance  -  dev + .NET SDK + VC++/DirectX",
+        lines=lines,
+        loop_seconds=10.5,
+        out_path=OUT_DIR / "run-profile-dev-advance.svg",
+    )
+
+
 # Re-bind `main` so the new demos are emitted (we kept the original above as
 # a stub to satisfy apply_patch context windows).
 
@@ -648,6 +714,8 @@ def main() -> None:  # noqa: F811 -- intentional override
     demo_profile_minimal()
     demo_profile_base()
     demo_profile_small_dev()
+    demo_profile_dev()
+    demo_profile_dev_advance()
     demo_profile_git()
     demo_profile_cpp_dx()
     demo_postgres()
